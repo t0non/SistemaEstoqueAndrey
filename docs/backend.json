@@ -1,0 +1,296 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's profile information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." }
+      },
+      "required": ["uid", "email"]
+    },
+    "Company": {
+      "title": "Company",
+      "description": "Represents a company's information.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the company." },
+        "cnpj": { "type": "string", "description": "The company's CNPJ." },
+        "phone": { "type": "string", "description": "The company's phone number." },
+        "segment": { "type": "string", "enum": ["metalurgica", "varejo", "outros"], "description": "The company's business segment." },
+        "ownerId": { "type": "string", "description": "The UID of the user who owns this company profile." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the company was created." },
+        "logoUrl": { "type": "string", "description": "URL of the company logo." },
+        "cep": { "type": "string" },
+        "street": { "type": "string" },
+        "number": { "type": "string" },
+        "complement": { "type": "string" },
+        "neighborhood": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" }
+      },
+      "required": ["name", "cnpj", "phone", "segment", "ownerId", "createdAt"]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a product in the inventory management system.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the product entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "sku": {
+          "type": "string",
+          "description": "Stock Keeping Unit or product code."
+        },
+        "currentStock": {
+          "type": "number",
+          "description": "The current stock quantity of the product. Updated via transactions."
+        },
+        "minStock": {
+          "type": "number",
+          "description": "The minimum stock quantity of the product."
+        },
+        "maxStock": {
+          "type": "number",
+          "description": "The maximum stock quantity of the product."
+        },
+        "costPrice": {
+          "type": "number",
+          "description": "The latest cost price of the product."
+        },
+        "salePrice": {
+          "type": "number",
+          "description": "The suggested selling price of the product."
+        },
+        "observations": {
+          "type": "string",
+          "description": "Additional observations or notes about the product."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the product was last updated.",
+          "format": "date-time"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the product.  Example: 'Glândulas', 'Cestos'"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The UID of the user who owns this product."
+        },
+        "supplierId": {
+          "type": "string",
+          "description": "The ID of the default supplier for this product."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "currentStock",
+        "minStock",
+        "maxStock",
+        "observations",
+        "updatedAt",
+        "ownerId"
+      ]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Represents a supplier of products.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the supplier."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the supplier company."
+        },
+        "contactName": {
+          "type": "string",
+          "description": "The name of the contact person."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The supplier's phone number."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The supplier's email address."
+        },
+        "leadTime": {
+          "type": "number",
+          "description": "Average delivery lead time in days."
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The UID of the user who owns this supplier."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the supplier was created."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "contactName",
+        "phone",
+        "email",
+        "leadTime",
+        "ownerId",
+        "createdAt"
+      ]
+    },
+    "Client": {
+      "title": "Client",
+      "description": "Represents a client of the company.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "document": { "type": "string", "description": "CPF or CNPJ document number." },
+        "ownerId": { "type": "string" }
+      },
+      "required": ["id", "name", "ownerId"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Represents a master record for a stock transaction, like a purchase invoice or a sale.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["IN", "OUT"] },
+        "supplierId": { "type": "string" },
+        "clientId": { "type": "string" },
+        "clientName": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "totalValue": { "type": "number", "description": "Gross total before discounts." },
+        "discountValue": { "type": "number" },
+        "netTotal": { "type": "number", "description": "Final value after discounts." },
+        "status": { "type": "string", "enum": ["COMPLETED", "CANCELLED", "PENDING_PAYMENT"] },
+        "notes": { "type": "string" },
+        "invoiceNumber": { "type": "string" },
+        "ownerId": { "type": "string" }
+      },
+      "required": ["id", "type", "date", "totalValue", "netTotal", "status", "ownerId"]
+    },
+    "TransactionItem": {
+      "title": "Transaction Item",
+      "description": "Represents a single line item within a transaction.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "quantity": { "type": "number" },
+        "price": { "type": "number", "description": "The cost (for purchases) or sale price (for sales) per unit for this item." },
+        "costPrice": { "type": "number", "description": "The cost of the product at the time of a sale transaction." },
+        "sku": { "type": "string" },
+        "ownerId": { "type": "string" }
+      },
+      "required": ["id", "transactionId", "productId", "quantity", "price", "ownerId"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/companies/{userId}",
+        "definition": {
+          "entityName": "Company",
+          "schema": {
+            "$ref": "#/backend/entities/Company"
+          },
+          "description": "Stores company information, with the document ID matching the owner's UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The user's UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/user_profiles/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores public user profile information, with the document ID matching the user's UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The user's UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores individual product details."
+        }
+      },
+      {
+        "path": "/suppliers/{supplierId}",
+        "definition": {
+          "entityName": "Supplier",
+          "schema": {
+            "$ref": "#/backend/entities/Supplier"
+          },
+          "description": "Stores supplier information, owned by a user."
+        }
+      },
+       {
+        "path": "/clients/{clientId}",
+        "definition": {
+          "entityName": "Client",
+          "schema": { "$ref": "#/backend/entities/Client" },
+          "description": "Stores client information."
+        }
+      },
+       {
+        "path": "/transactions/{transactionId}",
+        "definition": {
+          "entityName": "Transaction",
+          "schema": { "$ref": "#/backend/entities/Transaction" },
+          "description": "Stores master records for stock transactions."
+        }
+      },
+      {
+        "path": "/transaction_items/{itemId}",
+        "definition": {
+          "entityName": "TransactionItem",
+          "schema": { "$ref": "#/backend/entities/TransactionItem" },
+          "description": "Stores individual items of a transaction."
+        }
+      }
+    ]
+  }
+}
